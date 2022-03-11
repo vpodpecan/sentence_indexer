@@ -1,0 +1,3 @@
+whoosh==2.7.*
+nltk
+lemmagen3==3.3.2
