@@ -1,6 +1,12 @@
 ### Sentence indexer and sampler
 
-This small project implements an indexer on a given corpus of sentences. It uses the most basic schema (the only field is the sentence itself), but also offers lemmatization when indexing and searching.
+This small project implements an indexer on a given corpus of sentences. It uses a basic schema:
+
+-  the `content` field is indexed but not stored;
+-  the `raw` field is stored but not indexed.
+
+The query will always return the `raw` field. When the input to the `add_sentences_to_index` function is a string, both fields are the same. But you can also provide a dictionary such as: `{"content": "This is a sentence.", "raw": "This is a <strong>sentence</strong>."}`. In this case, `content` and `raw` are different. This is useful when you want to search preprocessed data but return unmodified, which is this case is conveniently stored with the index.
+
 
 ### Requirements
 -  python 3.6+
@@ -24,12 +30,12 @@ text = open('sample_data/Deseti_brat.txt').read().replace('\n', ' ')
 sentences = sent_tokenize(text, language='slovene')
 
 # create index using simple schema with lemmatization and add sentences to index
-lem_idx = indexer.create_index('index_folder', 'deseti_brat_idx', schema=indexer.lemmatization_schema)
-indexer.add_sentences_to_index(sentences, lem_idx)
+idx = indexer.create_index('index_folder', 'deseti_brat_idx', schema=indexer.lemmatization_schema)
+indexer.add_sentences_to_index(sentences, idx)
 
 # an ordinary query with first 10 results
-indexer.query('puška', lem_idx, limit=10)
+print(indexer.query('puška', idx, limit=10))
 
 # a query which returns a random sample of the whole result set
-indexer.query_sample('puška', lem_idx, sample_size=10)
+print(indexer.query_sample('puška', idx, sample_size=10))
 ```
